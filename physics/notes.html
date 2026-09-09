@@ -1,0 +1,412 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AaravVerse | Physics Notes</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #08090d;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .notes-navbar {
+            width: 92%;
+            max-width: 1250px;
+            height: 70px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(15,16,22,0.72);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+        }
+
+        .notes-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .notes-logo-box {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .notes-back {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .notes-back:hover {
+            color: white;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .notes-main {
+            width: 92%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 65px 0 100px;
+        }
+
+        .notes-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .notes-label {
+            color: #9b7cff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+
+        .notes-title {
+            font-size: clamp(48px, 7vw, 72px);
+            line-height: 1;
+            letter-spacing: -4px;
+            margin-bottom: 18px;
+            background: linear-gradient(90deg, #ffffff, #8b5cf6, #60a5fa);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .notes-description {
+            color: #777;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .chapter-card {
+            min-width: 0;
+            min-height: 190px;
+            padding: 28px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: white;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(
+                145deg,
+                rgba(255,255,255,0.06),
+                rgba(255,255,255,0.02)
+            );
+            transition: 0.3s ease;
+            overflow: hidden;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(139,92,246,0.35);
+            background: linear-gradient(
+                145deg,
+                rgba(255,255,255,0.09),
+                rgba(255,255,255,0.03)
+            );
+        }
+
+        .chapter-number {
+            color: #9b7cff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .chapter-card h2 {
+            font-size: 21px;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .chapter-card p {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .chapter-arrow {
+            position: absolute;
+            right: 25px;
+            bottom: 22px;
+            color: #777;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .chapter-card:hover .chapter-arrow {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .notes-footer {
+            width: 92%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 0 45px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            text-align: center;
+            color: #555;
+            font-size: 11px;
+        }
+
+        @media (max-width: 700px) {
+            .notes-navbar {
+                width: 94%;
+            }
+
+            .notes-main {
+                width: 94%;
+                padding: 50px 0 70px;
+            }
+
+            .chapter-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .notes-title {
+                font-size: 48px;
+                letter-spacing: -3px;
+            }
+
+            .notes-description {
+                font-size: 14px;
+            }
+
+            .chapter-card {
+                min-height: 175px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="notes-navbar">
+
+        <div class="notes-logo">
+            <div class="notes-logo-box">AV</div>
+            <span>AaravVerse</span>
+        </div>
+
+        <a href="physics.html" class="notes-back">
+            ← Physics
+        </a>
+
+    </nav>
+
+
+    <main class="notes-main">
+
+        <header class="notes-header">
+
+            <div class="notes-label">
+                CLASS 12 • PHYSICS
+            </div>
+
+            <h1 class="notes-title">
+                Notes.
+            </h1>
+
+            <p class="notes-description">
+                Chapter-wise Class 12 Physics notes,
+                concepts and explanations.
+            </p>
+
+        </header>
+
+
+        <section class="chapter-grid">
+
+            <a href="chapter1.html" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 01</div>
+                    <h2>Electric Charges and Fields</h2>
+                    <p>Electric charge, Coulomb's law, electric field and Gauss's law.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter2.html" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 02</div>
+                    <h2>Electrostatic Potential and Capacitance</h2>
+                    <p>Potential, potential energy, capacitors and capacitance.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter3.html" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 03</div>
+                    <h2>Current Electricity</h2>
+                    <p>Current, resistance, Ohm's law, cells and circuits.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=4" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 04</div>
+                    <h2>Moving Charges and Magnetism</h2>
+                    <p>Magnetic field, Lorentz force and motion of charged particles.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=5" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 05</div>
+                    <h2>Magnetism and Matter</h2>
+                    <p>Magnetic properties of materials, earth's magnetism and magnetisation.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=6" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 06</div>
+                    <h2>Electromagnetic Induction</h2>
+                    <p>Faraday's law, Lenz's law and electromagnetic induction.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=7" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 07</div>
+                    <h2>Alternating Current</h2>
+                    <p>AC circuits, reactance, impedance, resonance and transformers.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=8" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 08</div>
+                    <h2>Electromagnetic Waves</h2>
+                    <p>Properties, spectrum and applications of electromagnetic waves.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=9" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 09</div>
+                    <h2>Ray Optics and Optical Instruments</h2>
+                    <p>Reflection, refraction, lenses, mirrors and optical instruments.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=10" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 10</div>
+                    <h2>Wave Optics</h2>
+                    <p>Wavefronts, interference, diffraction and polarisation.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=11" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 11</div>
+                    <h2>Dual Nature of Radiation and Matter</h2>
+                    <p>Photoelectric effect, photons and matter waves.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=12" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 12</div>
+                    <h2>Atoms</h2>
+                    <p>Atomic models, Bohr's model and hydrogen spectrum.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=13" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 13</div>
+                    <h2>Nuclei</h2>
+                    <p>Nuclear structure, radioactivity, mass defect and binding energy.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+
+            <a href="chapter.html?chapter=14" class="chapter-card">
+                <div>
+                    <div class="chapter-number">CHAPTER 14</div>
+                    <h2>Semiconductor Electronics</h2>
+                    <p>Semiconductors, diodes, transistors and digital electronics.</p>
+                </div>
+                <span class="chapter-arrow">→</span>
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <footer class="notes-footer">
+        © 2026 AaravVerse • Class 12 Study Hub
+    </footer>
+
+</body>
+</html>
+```

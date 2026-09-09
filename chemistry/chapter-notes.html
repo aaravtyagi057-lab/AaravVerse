@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AaravVerse | Chemistry Notes</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #08090d;
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            font-size: 17px;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        #notesGrid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .note-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 12px;
+        }
+
+        .note-card img {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+        }
+
+        #message {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 18px;
+            margin-top: 50px;
+        }
+
+        .error {
+            color: #fca5a5 !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px 30px;
+            margin-top: 70px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: #64748b;
+        }
+
+        @media (max-width: 700px) {
+            #notesGrid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">AaravVerse</div>
+
+        <a href="notes.html">
+            ← Chapters
+        </a>
+    </nav>
+
+
+    <section class="hero">
+
+        <h1 id="chapterTitle">
+            Chemistry Notes
+        </h1>
+
+        <p>
+            Chapter notes
+        </p>
+
+    </section>
+
+
+    <main class="container">
+
+        <div id="notesGrid"></div>
+
+        <div id="message">
+            Loading notes...
+        </div>
+
+    </main>
+
+
+    <footer>
+        <p>Made with ❤️ for Class 12 • AaravVerse</p>
+    </footer>
+
+
+    <script>
+
+        const SERVER_URL =
+         "https://aaravverse-admin.onrender.com";
+
+        const params =
+            new URLSearchParams(window.location.search);
+
+        const chapter =
+            params.get("chapter");
+
+
+        const chapterNames = {
+
+            1: "Solutions",
+            2: "Electrochemistry",
+            3: "Chemical Kinetics",
+            4: "d- and f-Block Elements",
+            5: "Coordination Compounds",
+            6: "Haloalkanes and Haloarenes",
+            7: "Alcohols, Phenols and Ethers",
+            8: "Aldehydes, Ketones and Carboxylic Acids",
+            9: "Amines",
+            10: "Biomolecules"
+
+        };
+
+
+        document.getElementById("chapterTitle").textContent =
+            chapterNames[chapter] || "Chemistry Notes";
+
+
+        async function loadNotes() {
+
+            const grid =
+                document.getElementById("notesGrid");
+
+            const message =
+                document.getElementById("message");
+
+
+            if (!chapter) {
+
+                message.textContent =
+                    "⚠️ Chapter select nahi hua.";
+
+                message.classList.add("error");
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `${SERVER_URL}/api/notes/chemistry/notes/${chapter}`
+                );
+
+
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+
+
+                const files =
+                    await response.json();
+
+
+                grid.innerHTML = "";
+
+
+                if (files.length === 0) {
+
+                    message.textContent =
+                        "📚 Is chapter ke notes abhi upload nahi hue.";
+
+                    return;
+                }
+
+
+                message.style.display = "none";
+
+
+                files.forEach(file => {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className =
+                        "note-card";
+
+
+                    const img =
+                        document.createElement("img");
+
+                    img.src =
+                        SERVER_URL + file;
+
+                    img.alt =
+                        chapterNames[chapter] + " Notes";
+
+
+                    card.appendChild(img);
+
+                    grid.appendChild(card);
+
+                });
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                message.textContent =
+                    "⚠️ Notes load nahi ho rahe. Flask server check karo.";
+
+                message.classList.add("error");
+
+            }
+
+        }
+
+
+        loadNotes();
+
+    </script>
+
+</body>
+</html>

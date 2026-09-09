@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AaravVerse | CS Important Questions</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #08090d;
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 7%;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 65px 20px 45px;
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #94a3b8;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .question-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        @media (max-width: 700px) {
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">AaravVerse</div>
+        <a href="important.html">← Important Questions</a>
+    </nav>
+
+    <section class="hero">
+
+        <h1 id="chapterTitle">Important Questions</h1>
+
+        <p>Chapter-wise important questions</p>
+
+    </section>
+
+    <main class="container">
+
+        <div id="questionsGrid" class="questions-grid"></div>
+
+        <div id="emptyMessage" class="empty" style="display:none;">
+            📭 No important questions uploaded yet.
+        </div>
+
+    </main>
+
+    <script>
+
+        const SERVER_URL = 
+             "https://aaravverse-admin.onrender.com";
+
+        const chapter = new URLSearchParams(
+            window.location.search
+        ).get("chapter");
+
+        const chapterNames = {
+
+            1: "Computer Networks",
+            2: "Database Management",
+            3: "Introduction to Python",
+            4: "Functions",
+            5: "File Handling",
+            6: "Data Structures",
+            7: "Computer Networks & Cyber Security"
+
+        };
+
+        document.getElementById("chapterTitle").textContent =
+            chapterNames[chapter] || "Important Questions";
+
+
+        async function loadQuestions() {
+
+            const grid =
+                document.getElementById("questionsGrid");
+
+            const emptyMessage =
+                document.getElementById("emptyMessage");
+
+            try {
+
+                const response = await fetch(
+                    `${SERVER_URL}/api/notes/computer-science/important-questions/${chapter}`
+                );
+
+                const files = await response.json();
+
+                grid.innerHTML = "";
+
+                if (!files || files.length === 0) {
+
+                    emptyMessage.style.display = "block";
+
+                    return;
+                }
+
+                files.forEach(file => {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className = "question-card";
+
+                    const img =
+                        document.createElement("img");
+
+                    img.src = SERVER_URL + file;
+
+                    img.alt = "Computer Science Important Questions";
+
+                    card.appendChild(img);
+
+                    grid.appendChild(card);
+
+                });
+
+            } catch (error) {
+
+                console.error(error);
+
+                emptyMessage.textContent =
+                    "⚠️ Questions load nahi ho pa rahe.";
+
+                emptyMessage.style.display = "block";
+            }
+        }
+
+        loadQuestions();
+
+    </script>
+
+</body>
+</html>
