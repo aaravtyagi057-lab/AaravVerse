@@ -243,7 +243,11 @@ def get_notes(subject, content_type, chapter):
     )
 
     if response.status_code != 200:
-        return []
+     return {
+        "error": "GitHub API failed",
+        "status": response.status_code,
+        "message": response.text
+      }, response.status_code
 
     files = []
 
