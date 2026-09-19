@@ -1,4 +1,4 @@
-python
+
 from flask import Flask, render_template, request, redirect, url_for, session
 
 from werkzeug.utils import secure_filename
@@ -290,7 +290,8 @@ def get_notes(subject, content_type, chapter):
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28"
     }
-
+    print("GITHUB_TOKEN EXISTS:", bool(GITHUB_TOKEN))
+    print("GITHUB_TOKEN LENGTH:", len(GITHUB_TOKEN) if GITHUB_TOKEN else 0)
     response = requests.get(
         url,
         headers=headers,
