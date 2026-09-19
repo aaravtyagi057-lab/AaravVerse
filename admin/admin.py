@@ -1,9 +1,13 @@
+python
 from flask import Flask, render_template, request, redirect, url_for, session
+
 from werkzeug.utils import secure_filename
+
 import os
 import requests
 import base64
 import uuid
+
 
 app = Flask(
     __name__,
@@ -11,12 +15,18 @@ app = Flask(
     template_folder="templates"
 )
 
+
 # =========================================
 # SECRET KEY
 # =========================================
 
 app.secret_key = "my-school-portal-secret-key"
+
+
+# =========================================
 # GITHUB SETTINGS
+# =========================================
+
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 GITHUB_OWNER = "aaravtyagi057-lab"
 GITHUB_REPO = "AaravVerse"
@@ -29,7 +39,9 @@ GITHUB_BRANCH = "main"
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "https://aaravtyagi057-lab.github.io"
+    response.headers["Access-Control-Allow-Origin"] = (
+        "https://aaravtyagi057-lab.github.io"
+    )
     return response
 
 
@@ -40,18 +52,23 @@ def add_cors_headers(response):
 USERNAME = "aarav"
 PASSWORD = "090108"
 
+
 # =========================================
 # ADMIN LOGIN ROUTES
 # =========================================
 
 @app.route("/", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
+
         username = request.form.get("username")
         password = request.form.get("password")
 
         if username == USERNAME and password == PASSWORD:
+
             session["logged_in"] = True
+
             return redirect(url_for("dashboard"))
 
         return render_template(
@@ -64,6 +81,7 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
+
     if not session.get("logged_in"):
         return redirect(url_for("login"))
 
@@ -89,23 +107,34 @@ ALLOWED_EXTENSIONS = {
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Create upload folder automatically
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def allowed_file(filename):
+
     return (
         "." in filename
         and filename.rsplit(".", 1)[1].lower()
         in ALLOWED_EXTENSIONS
     )
+
+
+# =========================================
+# UPLOAD FILE TO GITHUB
+# =========================================
+
 def upload_to_github(file, github_path):
+
     file_content = file.read()
-    encoded_content = base64.b64encode(file_content).decode("utf-8")
+
+    encoded_content = base64.b64encode(
+        file_content
+    ).decode("utf-8")
 
     url = (
         f"https://api.github.com/repos/"
-        f"{GITHUB_OWNER}/{GITHUB_REPO}/contents/{github_path}"
+        f"{GITHUB_OWNER}/{GITHUB_REPO}/contents/"
+        f"{github_path}"
     )
 
     headers = {
@@ -129,12 +158,14 @@ def upload_to_github(file, github_path):
 
     return response
 
+
 # =========================================
 # UPLOAD PHOTO
 # =========================================
 
 @app.route("/upload-photo", methods=["POST"])
 def upload_photo():
+
     if not session.get("logged_in"):
         return redirect(url_for("login"))
 
@@ -151,30 +182,45 @@ def upload_photo():
         return "No photo selected!"
 
     # Notes & Important Questions = chapter-wise
+
     if content_type in ["notes", "important-questions"]:
+
         if not chapter:
             return "Please select a chapter!"
 
     # Homework & Important = direct folder
+
     elif content_type in ["homework", "important"]:
+
         chapter = None
 
     else:
+
         return "Invalid content type!"
 
     uploaded_count = 0
 
     for file in files:
+
         if file and file.filename != "":
+
             if allowed_file(file.filename):
 
-                extension = file.filename.rsplit(".", 1)[1].lower()
+                extension = file.filename.rsplit(
+                    ".", 1
+                )[1].lower()
 
                 # Unique filename
+
                 filename = f"{uuid.uuid4().hex}.{extension}"
 
                 # Create GitHub path
-                if content_type in ["notes", "important-questions"]:
+
+                if content_type in [
+                    "notes",
+                    "important-questions"
+                ]:
+
                     github_path = (
                         f"static/uploads/"
                         f"{subject}/"
@@ -182,7 +228,9 @@ def upload_photo():
                         f"chapter-{chapter}/"
                         f"{filename}"
                     )
+
                 else:
+
                     github_path = (
                         f"static/uploads/"
                         f"{subject}/"
@@ -191,14 +239,18 @@ def upload_photo():
                     )
 
                 # Upload to GitHub
+
                 response = upload_to_github(
                     file,
                     github_path
                 )
 
                 if response.status_code in [200, 201]:
+
                     uploaded_count += 1
+
                 else:
+
                     return (
                         f"GitHub upload failed! "
                         f"Status: {response.status_code}"
@@ -214,7 +266,9 @@ def upload_photo():
 # GET CHAPTER-WISE CONTENT FROM GITHUB
 # =========================================
 
-@app.route("/api/notes/<subject>/<content_type>/<chapter>")
+@app.route(
+    "/api/notes/<subject>/<content_type>/<chapter>"
+)
 def get_notes(subject, content_type, chapter):
 
     folder_path = (
@@ -230,7 +284,9 @@ def get_notes(subject, content_type, chapter):
         f"{folder_path}"
     )
 
+    # AUTHENTICATED REQUEST
     headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28"
     }
@@ -243,19 +299,23 @@ def get_notes(subject, content_type, chapter):
     )
 
     if response.status_code != 200:
-     return {
-        "error": "GitHub API failed",
-        "status": response.status_code,
-        "message": response.text
-      }, response.status_code
+
+        return {
+            "error": "GitHub API failed",
+            "status": response.status_code,
+            "message": response.text
+        }, response.status_code
 
     files = []
 
     for item in response.json():
+
         if item.get("type") == "file":
+
             filename = item.get("name", "")
 
             if allowed_file(filename):
+
                 raw_url = (
                     f"https://raw.githubusercontent.com/"
                     f"{GITHUB_OWNER}/{GITHUB_REPO}/"
@@ -267,15 +327,20 @@ def get_notes(subject, content_type, chapter):
 
     return files
 
+
 # =========================================
 # GET HOMEWORK / IMPORTANT TOPICS FROM GITHUB
 # =========================================
 
-@app.route("/api/content/<subject>/<content_type>")
+@app.route(
+    "/api/content/<subject>/<content_type>"
+)
 def get_content(subject, content_type):
 
     # Only allow these two
+
     if content_type not in ["homework", "important"]:
+
         return []
 
     folder_path = (
@@ -290,7 +355,9 @@ def get_content(subject, content_type):
         f"{folder_path}"
     )
 
+    # AUTHENTICATED REQUEST
     headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28"
     }
@@ -303,15 +370,23 @@ def get_content(subject, content_type):
     )
 
     if response.status_code != 200:
-        return []
+
+        return {
+            "error": "GitHub API failed",
+            "status": response.status_code,
+            "message": response.text
+        }, response.status_code
 
     files = []
 
     for item in response.json():
+
         if item.get("type") == "file":
+
             filename = item.get("name", "")
 
             if allowed_file(filename):
+
                 raw_url = (
                     f"https://raw.githubusercontent.com/"
                     f"{GITHUB_OWNER}/{GITHUB_REPO}/"
@@ -322,6 +397,7 @@ def get_content(subject, content_type):
                 files.append(raw_url)
 
     return files
+
 
 # =========================================
 # LOGOUT
